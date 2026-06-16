@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contfit - Tu Rutina para Bajar de Peso</title>
+  <script>
+    const routines = {
+      beginner: [
+        '20 min caminata rápida',
+        '15 sentadillas',
+        '10 flexiones',
+        '20 abdominales'
+      ],
+      intermediate: [
+        '30 min trote',
+        '20 sentadillas con salto',
+        '15 flexiones',
+        '30 abdominales bicicleta'
+      ],
+      advanced: [
+        '40 min HIIT',
+        '25 burpees',
+        '20 flexiones con palmada',
+        '50 abdominales con peso'
+      ]
+    };
+
+    function updateRoutine() {
+      const level = document.getElementById('levelSelect').value;
+      const list = document.getElementById('routineList');
+      list.innerHTML = '';
+      routines[level].forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = item;
+        list.appendChild(li);
+      });
+    }
+
+    function createCustomRoutine() {
+      const input = document.getElementById('customInput').value;
+      const list = document.getElementById('customRoutineList');
+      list.innerHTML = '';
+      input.split(',').forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = item.trim();
+        list.appendChild(li);
+      });
+      document.getElementById('customSection').style.display = 'block';
+    }
+
+    function calculateCalories() {
+      const peso = parseFloat(document.getElementById('peso').value);
+      const altura = parseFloat(document.getElementById('altura').value);
+      if (isNaN(peso) || isNaN(altura)) {
+        alert('Por favor, introduce peso y altura válidos.');
+        return;
+      }
+      const alturaM = altura / 100;
+      const imc = peso / (alturaM * alturaM);
+      let calorias = 0;
+      let level = '';
+
+      if (imc < 18.5) {
+        calorias = 2500;
+        level = 'beginner';
+      } else if (imc < 25) {
+        calorias = 2200;
+        level = 'intermediate';
+      } else if (imc < 30) {
+        calorias = 2000;
+        level = 'advanced';
+      } else {
+        calorias = 1800;
+        level = 'advanced';
+      }
+
+      document.getElementById('resultadoCalorias').innerText =
+        `Según tu peso y altura, deberías consumir aproximadamente ${calorias} calorías al día.`;
+
+      // Mostrar rutinas sugeridas
+      showSuggestedRoutines(level);
+    }
+
+    function showSuggestedRoutines(level) {
+      const routineContainer = document.getElementById('suggestedRoutines');
+      routineContainer.innerHTML = '';
+      routines[level].forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = item;
+        routineContainer.appendChild(li);
+      });
+      document.getElementById('suggestedRoutinesSection').style.display = 'block';
+    }
+  </script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f3f4f6;
+      padding: 2rem;
+      max-width: 800px;
+      margin: auto;
+    }
+    h1, h2 {
+      text-align: center;
+    }
+    .card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 1rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin-bottom: 1.5rem;
+    }
+    button {
+      padding: 0.5rem 1rem;
+      background: #3b82f6;
+      color: white;
+      border: none;
+      border-radius: 0.5rem;
+      cursor: pointer;
+    }
+    select, input[type=text], input[type=number] {
+      padding: 0.5rem;
+      width: 100%;
+      margin-bottom: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 0.5rem;
+    }
+    ul {
+      padding-left: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Contfit - Tu Rutina para Bajar de Peso</h1>
+
+  <div class="card">
+    <h2>Calcula tus calorías diarias</h2>
+    <label>Peso (kg):</label>
+    <input type="number" id="peso" placeholder="Ej: 70" />
+    <label>Altura (cm):</label>
+    <input type="number" id="altura" placeholder="Ej: 170" />
+    <button onclick="calculateCalories()">Calcular calorías</button>
+    <p id="resultadoCalorias"></p>
+  </div>
+
+  <div class="card" id="suggestedRoutinesSection" style="display: none;">
+    <h2>Rutinas sugeridas según tu cálculo:</h2>
+    <ul id="suggestedRoutines">
+      <!-- Aquí se agregarán las rutinas dinámicamente -->
+    </ul>
+  </div>
+
+  <div class="card">
+    <label for="levelSelect"><strong>Selecciona tu nivel:</strong></label>
+    <select id="levelSelect" onchange="updateRoutine()">
+      <option value="beginner">Principiante</option>
+      <option value="intermediate">Intermedio</option>
+      <option value="advanced">Avanzado</option>
+    </select>
+    <ul id="routineList">
+      <!-- Aquí se agregarán las rutinas según el nivel -->
+    </ul>
+  </div>
+
+  <div class="card">
+    <label for="customInput"><strong>Tu rutina personalizada (separa por coma):</strong></label>
+    <input type="text" id="customInput" placeholder="Ej: 10 min cuerda, 20 burpees" />
+    <button onclick="createCustomRoutine()">Crear rutina personalizada</button>
+    <div id="customSection" style="display: none; margin-top: 1rem;">
+      <h2>Tu rutina personalizada:</h2>
+      <ul id="customRoutineList">
+        <!-- Aquí se mostrarán las rutinas personalizadas -->
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    updateRoutine();
+  </script>
+</body>
+</html>
